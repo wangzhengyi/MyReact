@@ -1,5 +1,3 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
 import Didact from "./MyReact";
 
 // const h1 = React.createElement("h1", { title: "a" }, "123");

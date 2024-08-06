@@ -39,7 +39,7 @@ function render(element, container) {
       dom[key] = element.props[key];
     });
 
-  element.props.children.forEach((child, index) => {
+  element.props.children.forEach((child) => {
     render(child, dom);
   });
 
