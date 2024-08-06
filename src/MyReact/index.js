@@ -1,4 +1,5 @@
-import { createElement, render } from "./MyReact";
+import { createElement } from "./createElement";
+import { render } from "./render";
 
 const Didact = {
   createElement,
