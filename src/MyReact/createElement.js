@@ -1,9 +1,13 @@
 function createElement(type, props, ...children) {
+  console.log(type);
+  console.log(props);
+  console.log(children);
   return {
     type,
     props: {
       ...props,
       children: children.map((child) => {
+        console.log(child, typeof child);
         if (typeof child === "object") {
           return child;
         } else {
