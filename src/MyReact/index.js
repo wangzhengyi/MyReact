@@ -1,10 +1,10 @@
 import { createElement } from "./createElement";
 import { render, useState } from "./render";
 
-const Didact = {
+const MyReact = {
   createElement,
   render,
   useState,
 };
 
-export default Didact;
+export default MyReact;
