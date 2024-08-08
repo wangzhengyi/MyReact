@@ -264,7 +264,7 @@ function commitWork(fiber) {
   const domParent = domParentFiber.dom;
   if (fiber.effectTag === "PLACEMENT" && fiber.dom != null) {
     domParent.appendChild(fiber.dom);
-  } else if (fiber.effectTag === "DELETION" && fiber.dom != null) {
+  } else if (fiber.effectTag === "DELETION") {
     commitDeletion(fiber, domParent);
   } else if (fiber.effectTag === "UPDATE" && fiber.dom != null) {
     updateDom(fiber.dom, fiber.alternate.props, fiber.props);
@@ -304,7 +304,11 @@ function useState(initial) {
   // 执行之前队列中的actions
   const actions = oldHook ? oldHook.queue : [];
   actions.forEach((action) => {
-    hook.state = action(hook.state);
+    if (typeof action === "function") {
+      hook.state = action(hook.state);
+    } else {
+      hook.state = action;
+    }
   });
 
   const setState = (action) => {
