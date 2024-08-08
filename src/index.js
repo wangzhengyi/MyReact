@@ -18,8 +18,26 @@ const root = document.getElementById("root");
 
 // console.log(de);
 
+const handleClick = () => {
+  console.log("wzy", "h1 is click");
+};
+
 function App(props) {
-  return Didact.createElement("h1", null, "hi", props.name);
+  return Didact.createElement(
+    "h1",
+    {
+      onClick: handleClick,
+    },
+    Didact.createElement(
+      "p",
+      {
+        onClick: handleClick,
+      },
+      "hello world",
+    ),
+    "hi",
+    props.name,
+  );
 }
 
 const element = Didact.createElement(App, { name: "Foo" });
