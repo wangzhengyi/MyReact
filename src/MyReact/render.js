@@ -78,6 +78,8 @@ function performUnitOfWork(fiber) {
 /**
  * 更新函数组件
  */
+let wipFiber = null;
+let hookIndex = null;
 function updateFunctionComponent(fiber) {
   wipFiber = fiber;
   hookIndex = 0;
@@ -289,8 +291,6 @@ function commitDeletion(fiber, domParent) {
   }
 }
 
-let wipFiber = null;
-let hookIndex = null;
 function useState(initial) {
   // 获取旧的hook
   const oldHook =
