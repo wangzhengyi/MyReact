@@ -3,12 +3,11 @@
  */
 function createElement(type, props, ...children) {
   // 返回一个对象，表示虚拟 DOM 元素
-  const virturalDom = {
+  return {
     type, // 元素的类型（如 'div', 'span' 等，或者自定义组件）
     props: {
       ...props, // 展开传入的 props
       children: children.map((child) => {
-        console.log(child, typeof child);
         if (typeof child === "object") {
           // 如果子元素已经是对象（可能是另一个虚拟 DOM 元素）
           return child;
@@ -19,9 +18,6 @@ function createElement(type, props, ...children) {
       }),
     },
   };
-
-  console.log("wzy", virturalDom);
-  return virturalDom;
 }
 
 /**

@@ -37,6 +37,9 @@ function render(element, container) {
       children: [element],
     },
     alternate: currentRoot,
+    sibling: null,
+    parent: null,
+    child: null,
   };
 
   deletions = [];
@@ -92,19 +95,10 @@ function updateHostComponent(fiber) {
     fiber.dom = createDom(fiber);
   }
 
-  // 将DOM节点添加到父节点
-  if (fiber.parent) {
-    let domParent = fiber.parent;
-    // 查找最近的有DOM节点的祖先
-    while (!domParent.dom) {
-      domParent = domParent.parent;
-    }
-    domParent.dom.appendChild(fiber.dom);
-  }
-
   // 协调子元素
-  const elements = fiber.props.children;
-  reconcileChildren(fiber, elements);
+  if (fiber.props && fiber.props.children) {
+    reconcileChildren(fiber, fiber.props.children);
+  }
 }
 
 /**
@@ -189,46 +183,54 @@ function createDom(fiber) {
 function updateDom(dom, prevProps, nextProps) {
   const isEvent = (key) => key.startsWith("on");
   const isProperty = (key) => key !== "children" && !isEvent(key);
-  const isNew = (prev, next) => (key) => prev[key] !== next[key];
+  const isNew = (prev, next) => {
+    return (key) => {
+      return prev[key] !== next[key];
+    };
+  };
   const isGone = (prev, next) => {
     return (key) => {
       return !(key in next);
     };
   };
 
-  // 移除旧的或已更改的事件监听器
-  Object.keys(prevProps)
-    .filter(isEvent)
-    .filter((key) => !(key in nextProps) || isNew(prevProps, nextProps)(key))
-    .forEach((name) => {
-      const eventType = name.toLowerCase().substring(2);
-      dom.removeEventListener(eventType, prevProps[name]);
-    });
+  if (prevProps) {
+    // 移除旧的或已更改的事件监听器
+    Object.keys(prevProps)
+      .filter(isEvent)
+      .filter((key) => !(key in nextProps) || isNew(prevProps, nextProps)(key))
+      .forEach((name) => {
+        const eventType = name.toLowerCase().substring(2);
+        dom.removeEventListener(eventType, prevProps[name]);
+      });
 
-  // 移除旧的属性
-  Object.keys(prevProps)
-    .filter(isProperty)
-    .filter(isGone(prevProps, nextProps))
-    .forEach((name) => {
-      dom[name] = "";
-    });
+    // 移除旧的属性
+    Object.keys(prevProps)
+      .filter(isProperty)
+      .filter(isGone(prevProps, nextProps))
+      .forEach((name) => {
+        dom[name] = "";
+      });
+  }
 
-  // 设置新的或已更改的属性
-  Object.keys(nextProps)
-    .filter(isProperty)
-    .filter(isNew(prevProps, nextProps))
-    .forEach((name) => {
-      dom[name] = nextProps[name];
-    });
+  if (nextProps) {
+    // 设置新的或已更改的属性
+    Object.keys(nextProps)
+      .filter(isProperty)
+      .filter(isNew(prevProps, nextProps))
+      .forEach((name) => {
+        dom[name] = nextProps[name];
+      });
 
-  // 添加新的事件监听器
-  Object.keys(nextProps)
-    .filter(isEvent)
-    .filter(isNew(prevProps, nextProps))
-    .forEach((name) => {
-      const eventType = name.toLowerCase().substring(2);
-      dom.addEventListener(eventType, nextProps[name]);
-    });
+    // 添加新的事件监听器
+    Object.keys(nextProps)
+      .filter(isEvent)
+      .filter(isNew(prevProps, nextProps))
+      .forEach((name) => {
+        const eventType = name.toLowerCase().substring(2);
+        dom.addEventListener(eventType, nextProps[name]);
+      });
+  }
 }
 
 /**
