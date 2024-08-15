@@ -3,6 +3,7 @@
  */
 function createElement(type, props, ...children) {
   // 返回一个对象，表示虚拟 DOM 元素
+  console.log("wzy", "createElement-type", type);
   return {
     type, // 元素的类型（如 'div', 'span' 等，或者自定义组件）
     props: {
